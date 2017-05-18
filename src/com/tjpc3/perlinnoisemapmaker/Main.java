@@ -130,7 +130,7 @@ public class Main extends Canvas implements Runnable {
 	
 	private void update() {
 		count++;
-		count %= 60;
+		count %= 30;
 		if (count == 1) {
 			basicMap = new BasicMap(width, height, 0.5, rand.nextLong());
 		}
