@@ -10,6 +10,9 @@ import java.awt.image.DataBufferInt;
 import javax.swing.JFrame;
 
 import com.tjpc3.perlinnoisemapmaker.graphics.Screen;
+import com.tjpc3.perlinnoisemapmaker.noise.BasicNoise;
+import com.tjpc3.perlinnoisemapmaker.noise.Noise;
+import com.tjpc3.perlinnoisemapmaker.noise.WhiteNoise;
 
 public class Main extends Canvas implements Runnable {
 	private static int width = 350;
@@ -23,6 +26,8 @@ public class Main extends Canvas implements Runnable {
 	private JFrame frame;
 	private Screen screen;
 	
+	private Noise noise;
+	
 	private BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 	private int[] pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
 	
@@ -31,6 +36,8 @@ public class Main extends Canvas implements Runnable {
 		
 		frame = new JFrame();
 		screen = new Screen(width, height);
+
+		noise = new BasicNoise(width, height, 5, 24);
 	}
 	
 	public static void main(String[] args) {		
@@ -85,7 +92,7 @@ public class Main extends Canvas implements Runnable {
 		
 		screen.clear();
 		
-		screen.pixels[40 + 40 * width] = 0xFFFFFF;
+		noise.render(screen, 0, 0);
 		
 		for (int i = 0; i < pixels.length; i++) {
 			pixels[i] = screen.pixels[i];
@@ -96,9 +103,6 @@ public class Main extends Canvas implements Runnable {
 		g.dispose();
 		bs.show();
 	}
-
-	private int cyclestage = 0;
-	private long generation = 0;
 	
 	private void update() {
 		
