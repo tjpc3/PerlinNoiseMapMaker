@@ -6,19 +6,20 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.util.Random;
 
 import javax.swing.JFrame;
 
+import com.tjpc3.perlinnoisemapmaker.generation.BasicMap;
+import com.tjpc3.perlinnoisemapmaker.generation.Map;
 import com.tjpc3.perlinnoisemapmaker.graphics.Screen;
-import com.tjpc3.perlinnoisemapmaker.noise.BasicNoise;
 import com.tjpc3.perlinnoisemapmaker.noise.Noise;
-import com.tjpc3.perlinnoisemapmaker.noise.WhiteNoise;
 
 public class Main extends Canvas implements Runnable {
-	private static int width = 350;
-	private static int height = 350;
-	private static int scale = 3;
-	private static String title = "Picture Evolution";
+	private static int width = 1100;
+	private static int height = 600;
+	private static int scale = 1;
+	private static String title = "Perlin Noise Map Maker";
 	
 	private boolean running = false;
 	
@@ -26,10 +27,15 @@ public class Main extends Canvas implements Runnable {
 	private JFrame frame;
 	private Screen screen;
 	
-	private Noise noise;
+	private Noise whiteNoise;
+	private Noise basicNoise;
+	private Noise perlinNoise;
+	private Map basicMap;
 	
 	private BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 	private int[] pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
+	
+	private Random rand = new Random();
 	
 	public Main() {
 		setPreferredSize(new Dimension(width * scale, height * scale));
@@ -37,7 +43,17 @@ public class Main extends Canvas implements Runnable {
 		frame = new JFrame();
 		screen = new Screen(width, height);
 
-		noise = new BasicNoise(width, height, 5, 24);
+		//whiteNoise = new WhiteNoise(4, 4, rand.nextLong());
+		
+//		for (int y = 0; y < height; y++) {
+//			for (int x = 0; x < width; x++) {
+//				whiteNoise.pixels[x + y * width] = Interpolation.bilerp(x / (double) width, y / (double) height, 1.0, 0.5, 0.0, 1.0);
+//			}
+//		}
+		
+		//perlinNoise = new PerlinNoise(width, height, rand.nextLong());
+		
+		basicMap = new BasicMap(width, height, 0.5, rand.nextLong());
 	}
 	
 	public static void main(String[] args) {		
@@ -92,7 +108,13 @@ public class Main extends Canvas implements Runnable {
 		
 		screen.clear();
 		
-		noise.render(screen, 0, 0);
+		//perlinNoise.render(screen, 0, 0);
+		
+		basicMap.render(screen, 0, 0);
+		
+		//basicNoise.render(screen, 0, 0);
+		
+		//whiteNoise.render(screen, 0, 0);
 		
 		for (int i = 0; i < pixels.length; i++) {
 			pixels[i] = screen.pixels[i];
@@ -104,8 +126,14 @@ public class Main extends Canvas implements Runnable {
 		bs.show();
 	}
 	
+	int count = 0;
+	
 	private void update() {
-		
+		count++;
+		count %= 60;
+		if (count == 1) {
+			basicMap = new BasicMap(width, height, 0.5, rand.nextLong());
+		}
 	}
 
 	public synchronized void start() {

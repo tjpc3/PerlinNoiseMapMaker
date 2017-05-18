@@ -9,6 +9,7 @@ public abstract class Noise {
 	public Noise(int width, int height) {
 		this.width = width;
 		this.height = height;
+
 		pixels = new double[width * height];
 	}
 	
@@ -26,5 +27,19 @@ public abstract class Noise {
 
 	public int getWidth() {
 		return width;
+	}
+	
+	public double getPixel(int x, int y) {
+		if (x < 0 || y < 0 || x >= width || y >= height) return 0.5;
+		return pixels[x + y * width];
+	}
+	
+	public void add(Noise noise, double weight) {
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				if (x > noise.width || y > noise.height) continue;
+				pixels[x + y * width] += noise.pixels[x + y * width] * weight;
+			}
+		}
 	}
 }

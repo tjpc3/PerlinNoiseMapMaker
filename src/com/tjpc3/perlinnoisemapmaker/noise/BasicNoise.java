@@ -1,20 +1,16 @@
 package com.tjpc3.perlinnoisemapmaker.noise;
 
-import java.util.Random;
-
 import com.tjpc3.perlinnoisemapmaker.util.Interpolation;
 
 public class BasicNoise extends Noise {
 
-	private Random rand = new Random();
-	
-	public BasicNoise(int width, int height, int freq, long seed) {
+	public BasicNoise(int width, int height, Noise whiteNoise) {
 		super(width, height);
-		rand.setSeed(seed);
-		int xOffset = rand.nextInt(), yOffset = rand.nextInt();
+		double xRatio = (whiteNoise.width - 1) / (double) width, yRatio = (whiteNoise.height - 1) / (double) height;
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
-				double xa = (x + xOffset) / freq, ya = (y + yOffset) / freq; // This will be the coordinate to figure out suing bilinear interpolation
+				double xa = x * xRatio;
+				double ya = y * yRatio;
 				
 				int x1 = (int) Math.floor(xa);
 				int y1 = (int) Math.floor(ya);
@@ -22,18 +18,12 @@ public class BasicNoise extends Noise {
 				int x2 = x1 + 1;
 				int y2 = y1 + 1;
 				
-				// intNoise(x1, y1);
-				// intNoise(x2, y1);
-				// intNoise(x1, y2);
-				// intNoise(x2, y2);
-				
-				pixels[x + y * width] = Interpolation.bilerp(xa - x1, ya - y1, intNoise(x1, y1), intNoise(x2, y1), intNoise(x1, y2), intNoise(x2, y2));
+				pixels[x + y * width] = Interpolation.bilerp(xa - (double) x1, ya - (double) y1, 
+						whiteNoise.getPixel(x1, y1), 
+						whiteNoise.getPixel(x2, y1), 
+						whiteNoise.getPixel(x1, y2),
+						whiteNoise.getPixel(x2, y2));
 			}
 		}
-	}
-	
-	private double intNoise(int x, int y) {
-		rand.setSeed(((long)x << 32) & y);
-		return rand.nextDouble();
 	}
 }
