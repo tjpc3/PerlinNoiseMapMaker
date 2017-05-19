@@ -1,6 +1,7 @@
 package com.tjpc3.perlinnoisemapmaker.noise;
 
 import com.tjpc3.perlinnoisemapmaker.graphics.Screen;
+import com.tjpc3.perlinnoisemapmaker.util.Interpolation;
 
 public abstract class Noise {
 	protected int width, height;
@@ -40,6 +41,20 @@ public abstract class Noise {
 				if (x > noise.width || y > noise.height) continue;
 				pixels[x + y * width] += noise.pixels[x + y * width] * weight;
 			}
+		}
+	}
+	
+	public void stretch() { // Stretches noise so that the highest value is 1.0 and the lowest value is 0.0		
+		double min = Double.MAX_VALUE;
+		double max = 0.0;
+		
+		for (int i = 0; i < pixels.length; i++) {
+			max = Double.max(pixels[i], max);
+			min = Double.min(pixels[i], min);
+		}
+		
+		for (int i = 0; i < pixels.length; i++) {
+			pixels[i] = Interpolation.unlerp(min, max, pixels[i]);
 		}
 	}
 }

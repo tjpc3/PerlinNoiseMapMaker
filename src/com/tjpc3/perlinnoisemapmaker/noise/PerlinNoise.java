@@ -1,5 +1,7 @@
 package com.tjpc3.perlinnoisemapmaker.noise;
 
+import com.tjpc3.perlinnoisemapmaker.util.Interpolation;
+
 public class PerlinNoise extends Noise {
 	private final static int START_OCTAVE = 2;
 	
