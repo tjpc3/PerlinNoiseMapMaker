@@ -130,7 +130,7 @@ public class Main extends Canvas implements Runnable {
 	int count = 0;
 	
 	private void update() {
-		//count++;
+		count++;
 		count %= 60;
 		if (count == 1) {
 			map = new BiomeMap(width, height, rand.nextLong());
