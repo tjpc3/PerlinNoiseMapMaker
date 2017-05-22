@@ -15,6 +15,7 @@ import com.tjpc3.perlinnoisemapmaker.generation.ElevationMap;
 import com.tjpc3.perlinnoisemapmaker.generation.Map;
 import com.tjpc3.perlinnoisemapmaker.graphics.Screen;
 import com.tjpc3.perlinnoisemapmaker.noise.Noise;
+import com.tjpc3.perlinnoisemapmaker.noise.PerlinNoise;
 
 public class Main extends Canvas implements Runnable {
 	private static int scale = 1;
@@ -38,6 +39,8 @@ public class Main extends Canvas implements Runnable {
 	
 	private Random rand = new Random();
 	
+	double centerMultiplier = 0.5;
+	
 	public Main() {
 		setPreferredSize(new Dimension(width * scale, height * scale));
 		
@@ -53,8 +56,9 @@ public class Main extends Canvas implements Runnable {
 //		}
 //		
 		//perlinNoise = new PerlinNoise(width, height, rand.nextLong());
+		//perlinNoise.center(centerMultiplier);
 		//perlinNoise.stretch();
-		map = new BiomeMap(width, height, rand.nextLong());
+		map = new BiomeMap(width, height, centerMultiplier, rand.nextLong());
 	}
 	
 	public static void main(String[] args) {		
@@ -133,8 +137,9 @@ public class Main extends Canvas implements Runnable {
 		count++;
 		count %= 60;
 		if (count == 1) {
-			map = new BiomeMap(width, height, rand.nextLong());
+			map = new BiomeMap(width, height, centerMultiplier,  rand.nextLong());
 			//perlinNoise = new PerlinNoise(width, height, rand.nextLong());
+			//perlinNoise.center(centerMultiplier);
 			//perlinNoise.stretch();
 		}
 	}

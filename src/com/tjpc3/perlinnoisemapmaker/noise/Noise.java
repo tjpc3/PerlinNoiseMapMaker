@@ -57,4 +57,17 @@ public abstract class Noise {
 			pixels[i] = Interpolation.unlerp(min, max, pixels[i]);
 		}
 	}
+	
+	public void center(double multiplier) { // Lowers the areas closer to the edges NOTE: Recommended to run stretch after running this
+		double maxDist = Math.sqrt(Math.pow(width / 2, 2) + Math.pow(height / 2, 2));
+		
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				double dist = 
+				
+//				double dist = Math.sqrt(Math.pow(x - width / 2, 2) + Math.pow(y - height / 2, 2));
+//				pixels[x + y * width] = (pixels[x + y * width] + 0.05) * (1 - 0.9 * Math.pow(Interpolation.unlerp(0, maxDist, dist), multiplier));
+			}
+		}
+	}
 }
