@@ -23,6 +23,7 @@ public class BiomeMap extends Map {
 		super(width, height);
 		
 		Noise elevation = new PerlinNoise(width, height, seed);
+		elevation.stretch();
 		elevation.center(centerMultiplier);
 		elevation.stretch();
 		
@@ -35,6 +36,6 @@ public class BiomeMap extends Map {
 	}
 	
 	private int color(double e, double m) {
-		return SpriteSheet.biomes.getPixel((int) (m * 100), (int) (100 - e * 100)); // Because the y axis on pictures is at the top
+		return SpriteSheet.biomes.getPixel((int) (m * 100), (int) (99 - e * 100)); // Because the y axis on pictures is at the top
 	}
 }

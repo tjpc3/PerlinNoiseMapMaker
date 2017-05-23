@@ -59,15 +59,59 @@ public abstract class Noise {
 	}
 	
 	public void center(double multiplier) { // Lowers the areas closer to the edges NOTE: Recommended to run stretch after running this
-		double maxDist = Math.sqrt(Math.pow(width / 2, 2) + Math.pow(height / 2, 2));
+		//double maxDist = distFromEdges(width / 2, height / 2);
 		
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
-				double dist = 
+				//double dist =  Interpolation.unlerp(0, maxDist, distFromEdges(x, y));
 				
 //				double dist = Math.sqrt(Math.pow(x - width / 2, 2) + Math.pow(y - height / 2, 2));
-//				pixels[x + y * width] = (pixels[x + y * width] + 0.05) * (1 - 0.9 * Math.pow(Interpolation.unlerp(0, maxDist, dist), multiplier));
+				//pixels[x + y * width] = (pixels[x + y * width] + 0.1) * (0.5 * Math.pow(distFromEdges(x, y, 0), multiplier));
+				pixels[x + y * width] *= distFromEdges(x, y);
 			}
 		}
+	}
+	
+	public double distFromEdges(int x, int y) { // Distance is scaled 0 - 1
+//		boolean belowA = y >= x * (height / (double) width);
+//		boolean belowB = y >= x * -(height / (double) width) + height;
+		double result;
+//		if (belowA) {
+//			if (belowB) {
+//				result = (height - y) / (double) (height / 2);
+//			} else {
+//				result = (x) / (double) (width / 2);
+//			}
+//		} else {
+//			if (belowB) {
+//				result = (width - x) / (double) (width / 2);
+//			} else {
+//				result = (y) / (double) (height / 2);
+//			}
+//		}
+		boolean belowVertical = y >= height / 2;
+		boolean rightHorizontal = x >= width / 2;
+		int ax = 0, ay = 0;
+		
+		if (belowVertical) {
+			ay = height - y;
+		} else {
+			ay = y;
+		}
+		
+		if (rightHorizontal) {
+			ax = width - x;
+		} else {
+			ax = x;
+		}
+		
+		result = dist(ax, ay) / dist(width / 2, height / 2);
+		if (result > 0) return Math.pow(result, 1);
+		else return 0.0;
+		//return result;
+	}
+	
+	private double dist(int x, int y) {
+		return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 	}
 }

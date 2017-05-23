@@ -16,6 +16,7 @@ import com.tjpc3.perlinnoisemapmaker.generation.Map;
 import com.tjpc3.perlinnoisemapmaker.graphics.Screen;
 import com.tjpc3.perlinnoisemapmaker.noise.Noise;
 import com.tjpc3.perlinnoisemapmaker.noise.PerlinNoise;
+import com.tjpc3.perlinnoisemapmaker.noise.WhiteNoise;
 
 public class Main extends Canvas implements Runnable {
 	private static int scale = 1;
@@ -39,7 +40,7 @@ public class Main extends Canvas implements Runnable {
 	
 	private Random rand = new Random();
 	
-	double centerMultiplier = 0.5;
+	double centerMultiplier = 1.0;
 	
 	public Main() {
 		setPreferredSize(new Dimension(width * scale, height * scale));
@@ -47,18 +48,21 @@ public class Main extends Canvas implements Runnable {
 		frame = new JFrame();
 		screen = new Screen(width, height);
 
-//		whiteNoise = new WhiteNoise(width, height, rand.nextLong());
-//		
-//		for (int y = 0; y < height; y++) {
-//			for (int x = 0; x < width; x++) {
-//				whiteNoise.pixels[x + y * width] = Interpolation.bilerp(x / (double) width, y / (double) height, 1.0, 0.5, 0.0, 1.0);
-//			}
-//		}
-//		
+		whiteNoise = new WhiteNoise(width, height, rand.nextLong());
+		
+		map = new BiomeMap(width, height, centerMultiplier, rand.nextLong());
+		
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				whiteNoise.pixels[x + y * width] = whiteNoise.distFromEdges(x, y);
+				//whiteNoise.pixels[x + y * width] = Interpolation.bilerp(x / (double) width, y / (double) height, 1.0, 0.5, 0.0, 1.0);
+			}
+		}
+
 		//perlinNoise = new PerlinNoise(width, height, rand.nextLong());
 		//perlinNoise.center(centerMultiplier);
 		//perlinNoise.stretch();
-		map = new BiomeMap(width, height, centerMultiplier, rand.nextLong());
+		//map = new BiomeMap(width, height, centerMultiplier, rand.nextLong());
 	}
 	
 	public static void main(String[] args) {		
@@ -114,12 +118,13 @@ public class Main extends Canvas implements Runnable {
 		screen.clear();
 		
 		//perlinNoise.render(screen, 0, 0);
+
+		whiteNoise.render(screen, 0, 0);
 		
-		map.render(screen, 0, 0);
+		//map.render(screen, 0, 0);
 		
 		//basicNoise.render(screen, 0, 0);
 		
-		//whiteNoise.render(screen, 0, 0);
 		
 		for (int i = 0; i < pixels.length; i++) {
 			pixels[i] = screen.pixels[i];
@@ -134,14 +139,15 @@ public class Main extends Canvas implements Runnable {
 	int count = 0;
 	
 	private void update() {
-		count++;
-		count %= 60;
+		count %= 90;
 		if (count == 1) {
-			map = new BiomeMap(width, height, centerMultiplier,  rand.nextLong());
+			//map = new BiomeMap(width, height, centerMultiplier, rand.nextLong());
+			//map = new BiomeMap(width, height, rand.nextLong());
 			//perlinNoise = new PerlinNoise(width, height, rand.nextLong());
 			//perlinNoise.center(centerMultiplier);
 			//perlinNoise.stretch();
 		}
+		count++;
 	}
 
 	public synchronized void start() {
