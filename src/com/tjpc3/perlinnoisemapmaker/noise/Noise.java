@@ -67,12 +67,12 @@ public abstract class Noise {
 				
 //				double dist = Math.sqrt(Math.pow(x - width / 2, 2) + Math.pow(y - height / 2, 2));
 				//pixels[x + y * width] = (pixels[x + y * width] + 0.1) * (0.5 * Math.pow(distFromEdges(x, y, 0), multiplier));
-				pixels[x + y * width] *= distFromEdges(x, y);
+				pixels[x + y * width] *= distFromEdges(x, y, multiplier);
 			}
 		}
 	}
 	
-	public double distFromEdges(int x, int y) { // Distance is scaled 0 - 1
+	public double distFromEdges(int x, int y, double b) { // Distance is scaled 0 - 1
 //		boolean belowA = y >= x * (height / (double) width);
 //		boolean belowB = y >= x * -(height / (double) width) + height;
 		double result;
@@ -89,29 +89,38 @@ public abstract class Noise {
 //				result = (y) / (double) (height / 2);
 //			}
 //		}
-		boolean belowVertical = y >= height / 2;
-		boolean rightHorizontal = x >= width / 2;
-		int ax = 0, ay = 0;
+//		
+//		boolean belowVertical = y >= height / 2;
+//		boolean rightHorizontal = x >= width / 2;
+//		int ax = 0, ay = 0;
+//		
+//		if (belowVertical) {
+//			ay = height - y;
+//		} else {
+//			ay = y;
+//		}
+//		
+//		if (rightHorizontal) {
+//			ax = width - x;
+//		} else {
+//			ax = x;
+//		}
+//		result = dist(ax, ay) / dist(width / 2, height / 2);
 		
-		if (belowVertical) {
-			ay = height - y;
-		} else {
-			ay = y;
-		}
+		//double b = 0.5;
 		
-		if (rightHorizontal) {
-			ax = width - x;
-		} else {
-			ax = x;
-		}
+		int widthh = width / 2;
+		int widthd = -widthh * widthh;
+		double xa = Math.pow((x * (1 / (double) widthd)) * (x - width), b);
 		
-		result = dist(ax, ay) / dist(width / 2, height / 2);
+		int heighth = height / 2;
+		int heightd = -heighth * heighth;
+		double ya = Math.pow((y * (1 / (double) heightd)) * (y - height), b);
+		
+		result = xa * ya;
+		
 		if (result > 0) return Math.pow(result, 1);
 		else return 0.0;
 		//return result;
-	}
-	
-	private double dist(int x, int y) {
-		return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 	}
 }
