@@ -21,7 +21,9 @@ public class LightningMap extends Map {
 		
 		lines.add(new Line2D(new Vector2D(0, height / 2), new Vector2D(width, height / 2)));
 		
-		for (int i = 0; i < 100; i++) {
+		double previousOffset = 0.0;
+		
+		for (int i = 0; i < 50; i++) {
 			Line2D longest = getLongest();
 			//Vector2D end = longest.getEndVector();
 			double alpha = rand.nextDouble();
@@ -36,10 +38,11 @@ public class LightningMap extends Map {
 							alpha));
 			
 			alpha = rand.nextDouble();
-			double maxOffset = 100.0;
+			double maxOffset = 50.0;
 			double halfOffset = maxOffset / 2.0;
 			//splitVector.setX((int) (splitVector.getX() + (alpha * maxOffset - halfOffset)));
-			splitVector.setY((int) (splitVector.getY() + (alpha * maxOffset - halfOffset)));
+			previousOffset = (previousOffset + alpha * maxOffset - halfOffset) / 1.2;
+			splitVector.setY((int) (splitVector.getY() + (previousOffset)));
 			
 			Vector2D end = longest.getEndVector();
 			longest.setEndVector(splitVector);

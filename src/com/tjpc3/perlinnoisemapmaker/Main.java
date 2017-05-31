@@ -63,7 +63,7 @@ public class Main extends Canvas implements Runnable {
 		//perlinNoise = new PerlinNoise(width, height, rand.nextLong());
 		//perlinNoise.center(centerMultiplier);
 		//perlinNoise.stretch();
-		//map = new BiomeMap(width, height, centerMultiplier, rand.nextLong());
+		map = new BiomeMap(width, height, centerMultiplier, rand.nextLong());
 		//voronoiMap = new VoronoiMap(width, height, 100, rand.nextLong());
 		//lightningMap = new LightningMap(width, height, rand.nextLong());
 		
@@ -125,13 +125,13 @@ public class Main extends Canvas implements Runnable {
 
 //		whiteNoise.render(screen, 0, 0);
 		
-		//map.render(screen, 0, 0);
+		map.render(screen, 0, 0);
 		
 		//Line2D line = new Line2D(new Vector2D(40, 50), new Vector2D(300, 150));
 		//line.render(screen, 0xFFFFFF);
 		
-		lightningMap.render(screen, 0, 0);
-		screen.smooth();
+		//lightningMap.render(screen, 0, 0);
+		//screen.smooth();
 		
 		//voronoiMap.render(screen, 0, 0);
 		
@@ -159,7 +159,7 @@ public class Main extends Canvas implements Runnable {
 			//perlinNoise.center(centerMultiplier);
 			//perlinNoise.stretch();
 			//voronoiMap = new VoronoiMap(width, height, 100, rand.nextLong());
-			lightningMap = new LightningMap(width, height, rand.nextLong());
+			//lightningMap = new LightningMap(width, height, rand.nextLong());
 		}
 		count++;
 	}

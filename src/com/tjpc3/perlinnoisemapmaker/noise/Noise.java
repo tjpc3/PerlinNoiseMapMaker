@@ -31,7 +31,7 @@ public abstract class Noise {
 	}
 	
 	public double getPixel(int x, int y) {
-		if (x < 0 || y < 0 || x >= width || y >= height) return 0.5;
+		if (x < 0 || y < 0 || x >= width || y >= height) return 1.0; // 1.0 as to not break river carving logic
 		return pixels[x + y * width];
 	}
 	
