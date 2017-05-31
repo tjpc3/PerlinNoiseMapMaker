@@ -11,17 +11,15 @@ import java.util.Random;
 import javax.swing.JFrame;
 
 import com.tjpc3.perlinnoisemapmaker.generation.BiomeMap;
-import com.tjpc3.perlinnoisemapmaker.generation.ElevationMap;
+import com.tjpc3.perlinnoisemapmaker.generation.LightningMap;
 import com.tjpc3.perlinnoisemapmaker.generation.Map;
 import com.tjpc3.perlinnoisemapmaker.graphics.Screen;
 import com.tjpc3.perlinnoisemapmaker.noise.Noise;
-import com.tjpc3.perlinnoisemapmaker.noise.PerlinNoise;
-import com.tjpc3.perlinnoisemapmaker.noise.WhiteNoise;
 
 public class Main extends Canvas implements Runnable {
 	private static int scale = 1;
-	private static int width = 1500 / scale;
-	private static int height = 1100 / scale;
+	private static int width = 1300 / scale;
+	private static int height = 700 / scale;
 	private static String title = "Perlin Noise Map Maker";
 	
 	private boolean running = false;
@@ -32,7 +30,9 @@ public class Main extends Canvas implements Runnable {
 	
 	private Noise whiteNoise;
 	private Noise basicNoise;
+	private Map voronoiMap;
 	private Noise perlinNoise;
+	private Map lightningMap;
 	private Map map;
 	
 	private BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -50,7 +50,7 @@ public class Main extends Canvas implements Runnable {
 
 //		whiteNoise = new WhiteNoise(width, height, rand.nextLong());
 		
-		map = new BiomeMap(width, height, centerMultiplier, rand.nextLong());
+		//map = new BiomeMap(width, height, centerMultiplier, rand.nextLong());
 		
 //		for (int y = 0; y < height; y++) {
 //			for (int x = 0; x < width; x++) {
@@ -64,6 +64,9 @@ public class Main extends Canvas implements Runnable {
 		//perlinNoise.center(centerMultiplier);
 		//perlinNoise.stretch();
 		//map = new BiomeMap(width, height, centerMultiplier, rand.nextLong());
+		//voronoiMap = new VoronoiMap(width, height, 100, rand.nextLong());
+		//lightningMap = new LightningMap(width, height, rand.nextLong());
+		
 	}
 	
 	public static void main(String[] args) {		
@@ -122,7 +125,15 @@ public class Main extends Canvas implements Runnable {
 
 //		whiteNoise.render(screen, 0, 0);
 		
-		map.render(screen, 0, 0);
+		//map.render(screen, 0, 0);
+		
+		//Line2D line = new Line2D(new Vector2D(40, 50), new Vector2D(300, 150));
+		//line.render(screen, 0xFFFFFF);
+		
+		lightningMap.render(screen, 0, 0);
+		screen.smooth();
+		
+		//voronoiMap.render(screen, 0, 0);
 		
 		//basicNoise.render(screen, 0, 0);
 		
@@ -140,13 +151,15 @@ public class Main extends Canvas implements Runnable {
 	int count = 0;
 	
 	private void update() {
-		count %= 180;
+		count %= 2;
 		if (count == 1) {
-			map = new BiomeMap(width, height, centerMultiplier, rand.nextLong());
+			//map = new BiomeMap(width, height, centerMultiplier, rand.nextLong());
 			//map = new BiomeMap(width, height, rand.nextLong());
 			//perlinNoise = new PerlinNoise(width, height, rand.nextLong());
 			//perlinNoise.center(centerMultiplier);
 			//perlinNoise.stretch();
+			//voronoiMap = new VoronoiMap(width, height, 100, rand.nextLong());
+			lightningMap = new LightningMap(width, height, rand.nextLong());
 		}
 		count++;
 	}
