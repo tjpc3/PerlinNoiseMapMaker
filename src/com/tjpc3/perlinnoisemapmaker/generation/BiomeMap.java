@@ -6,8 +6,6 @@ import java.util.Random;
 import com.tjpc3.perlinnoisemapmaker.io.SpriteSheet;
 import com.tjpc3.perlinnoisemapmaker.noise.Noise;
 import com.tjpc3.perlinnoisemapmaker.noise.PerlinNoise;
-import com.tjpc3.perlinnoisemapmaker.pathfinding.Grid2d;
-import com.tjpc3.perlinnoisemapmaker.pathfinding.Grid2d.MapNode;
 import com.tjpc3.perlinnoisemapmaker.util.Vector2D;
 
 public class BiomeMap extends Map {
@@ -38,6 +36,10 @@ public class BiomeMap extends Map {
 		Noise moisture = new PerlinNoise(width, height, seed + 1);
 		moisture.stretch();
 	
+		for (int i = 0; i < pixels.length; i++) {
+			pixels[i] = color(elevation.pixels[i], moisture.pixels[i]);
+		}
+		
 		for (int c = 0; c < 1; c++) {
 			// Start source selection
 			Vector2D sourceVector = null;
@@ -53,37 +55,42 @@ public class BiomeMap extends Map {
 			}
 			// End source selection
 			
-			// Start source selection
-			Vector2D endVector = null;
-			double endElevation = -1.0;
-			while(endVector == null) {
-				int randX = rand.nextInt(width);
-				int randY = rand.nextInt(height);
-					
-				endElevation = elevation.getPixel(randX, randY);
-				if (endElevation < 0.3) { // The minimum elevation rivers must start at
-					endVector = new Vector2D(randX, randY);
+			double currentLowestElevation = Double.MAX_VALUE;
+			Vector2D currentLowestPos = new Vector2D(sourceVector.getX(), sourceVector.getY());
+			
+			int count = 0;
+			while (count < 1000) {
+				count++;
+				pixels[sourceVector.getX() + sourceVector.getY() * width] = 0x0000FF;
+				sourceElevation = elevation.getPixel(sourceVector.getX(), sourceVector.getY());
+				
+				for (int y = -1; y < 2; y++) {
+					for (int x = -1; x < 2; x++) {
+						if (x == 0 && y == 0)
+							continue;
+						//System.out.println("X: " + x + " Y: " + y);
+						double testElevation = elevation.pixels[(sourceVector.getX() + x) + (sourceVector.getY() + y) * elevation.getWidth()];
+						
+						if (testElevation == -1.0)
+							continue;
+						
+						if (testElevation < currentLowestElevation) {
+							currentLowestElevation = testElevation;
+							currentLowestPos = new Vector2D(sourceVector.getX() + x, sourceVector.getY() + y);
+						}
+					}
 				}
-			}
-			// End source selection
-			
-			double[][] map2d = new double[width][height];
-			for (int y = 0; y < height; y++) {
-				for (int x = 0; x < width; x++) {
-					map2d[x][y] = elevation.pixels[x + y * width];
+				
+				if (currentLowestElevation < 0.3)
+					break;
+				
+				if (currentLowestElevation >= sourceElevation) { // If river got into a hole
+					System.out.println("test");
+					elevation.pixels[sourceVector.getX() + sourceVector.getY() * elevation.getWidth()] = -1.0;
 				}
+				
+				sourceVector = currentLowestPos;
 			}
-			
-			Grid2d grid2d = new Grid2d(map2d, false);
-			List<MapNode> nodes = grid2d.findPath(sourceVector.getX(), sourceVector.getY(), endVector.getX(), endVector.getY());
-			
-			for (int i = 0; i < nodes.size(); i++) {
-				elevation.pixels[nodes.get(i).getX() + nodes.get(i).getY() * elevation.getWidth()] = 0.2;
-			}
-		}
-		
-		for (int i = 0; i < pixels.length; i++) {
-			pixels[i] = color(elevation.pixels[i], moisture.pixels[i]);
 		}
 	}
 	
